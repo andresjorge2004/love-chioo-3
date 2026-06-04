@@ -114,7 +114,7 @@
 
     <div id="intro-screen">
         <h1>NUESTRO UNIVERSO</h1>
-        <p id="error-msg">⚠️ Si ves esto negro y no avanza al darle Explorar, es porque abriste el archivo con doble clic.</p>
+        <p id="error-msg">⚠️ Si ves esto negro y no avanza al darle Explorar, abre desde un servidor.</p>
         <button id="btn-enter">EXPLORAR</button>
     </div>
 
@@ -137,6 +137,9 @@
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
         document.getElementById('error-msg').style.display = 'none';
+
+        // Detectar si es móvil para ajustar calidad
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         const emojisPosibles = ['❤️','💕','💖','💗','💓','💞','✨','🌹','🌸','🫶','💫','♡','🦋','🌷','🌟','💌','💑','👩‍❤️‍👨','👨‍❤️‍👨','👩‍❤️‍👩','💏','💐','🪷','🪻','🌝','🌛','🌜','🫰','🫠','🥺','🤗','🕯️','🏹','🎁','🍯','🍬','🍭','🧁','🍰','🎇','🎆','🏖️','🌅','🌄','🚀','🗝️','❤️‍🔥','❤️‍🩹'];
         const paletaColores = ['#ffb3c6','#ff809f','#ffd1dc','#ffffff','#ff99b3'];
@@ -225,11 +228,12 @@
         const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.position.set(0, 40, 120);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+        const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, powerPreference: "high-performance" });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // En móvil usamos pixelRatio 1 para mayor nitidez y menos carga
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
+        renderer.toneMappingExposure = isMobile ? 0.9 : 1.2;
         container.appendChild(renderer.domElement);
 
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -238,7 +242,11 @@
         controls.maxDistance = 350; controls.minDistance = 25;
 
         const renderScene = new RenderPass(scene, camera);
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 2.0, 0.8, 0.1);
+        // Bloom mucho más suave en móvil para no tapar los emojis
+        const bloomStrength = isMobile ? 0.6 : 2.0;
+        const bloomRadius = isMobile ? 0.3 : 0.8;
+        const bloomThreshold = isMobile ? 0.4 : 0.1;
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), bloomStrength, bloomRadius, bloomThreshold);
         const composer = new EffectComposer(renderer);
         composer.addPass(renderScene); composer.addPass(bloomPass);
 
@@ -271,8 +279,9 @@
         scene.add(accretionDisk);
 
         const starGeo = new THREE.BufferGeometry();
-        const starPos = new Float32Array(15000 * 3);
-        for(let i = 0; i < 15000; i++) {
+        const starCount = isMobile ? 8000 : 15000;
+        const starPos = new Float32Array(starCount * 3);
+        for(let i = 0; i < starCount; i++) {
             const r = 25 + Math.pow(Math.random(), 2) * 250;
             const theta = Math.random() * 2 * Math.PI;
             const phi = Math.acos((Math.random() * 2 - 1) * 0.1);
@@ -289,30 +298,45 @@
 
         function createEmojiHologramSprite(emojiText, colorHex) {
             const canvas = document.createElement('canvas');
-            canvas.width = 512; canvas.height = 512;
+            // Mayor resolución en móvil para nitidez
+            const size = isMobile ? 256 : 512;
+            canvas.width = size; canvas.height = size;
             const ctx = canvas.getContext('2d');
 
-            const gradient = ctx.createRadialGradient(256, 256, 30, 256, 256, 220);
-            gradient.addColorStop(0, colorHex);
-            gradient.addColorStop(0.5, colorHex + '66');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 512, 512);
+            // Aura muy sutil en móvil para no tapar el emoji
+            if (!isMobile) {
+                const gradient = ctx.createRadialGradient(size/2, size/2, 30, size/2, size/2, size*0.43);
+                gradient.addColorStop(0, colorHex + '44');
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, size, size);
+            }
 
-            ctx.font = '160px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+            // Emoji nítido y grande
+            const fontSize = isMobile ? 140 : 160;
+            ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
-            ctx.shadowBlur = 20;
+            // Sin sombra en móvil para máxima nitidez
+            if (!isMobile) {
+                ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+                ctx.shadowBlur = 8;
+            }
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(emojiText, 256, 275);
+            ctx.fillText(emojiText, size/2, size/2 + (isMobile ? 8 : 15));
 
             const texture = new THREE.CanvasTexture(canvas);
             texture.colorSpace = THREE.SRGBColorSpace;
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
 
             const material = new THREE.SpriteMaterial({
-                map: texture, transparent: true,
-                blending: THREE.NormalBlending, depthWrite: false
+                map: texture,
+                transparent: true,
+                blending: THREE.NormalBlending,
+                depthWrite: false,
+                // Sin sRGB extra en móvil
+                toneMapped: isMobile ? false : true
             });
 
             const sprite = new THREE.Sprite(material);
@@ -332,13 +356,18 @@
         });
 
         const raycaster = new THREE.Raycaster();
+        // Raycaster más generoso en móvil (dedo más grande que cursor)
+        raycaster.params.Sprite = { threshold: isMobile ? 8 : 3 };
         const mouse = new THREE.Vector2();
         const crosshair = document.getElementById('crosshair');
         const cardModal = document.getElementById('message-card');
 
-        // ✅ Función unificada para mouse y touch
+        // Bloqueo para evitar que se abran múltiples tarjetas al tocar
+        let touchBlocked = false;
+
         function handleInteraction(clientX, clientY) {
             if (cardModal.classList.contains('active')) return;
+            if (touchBlocked) return;
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
@@ -356,10 +385,12 @@
                 document.getElementById('card-title').innerText = data.title;
                 document.getElementById('card-text').innerText = data.card;
                 cardModal.classList.add('active');
+
+                touchBlocked = true;
+                setTimeout(() => { touchBlocked = false; }, 600);
             }
         }
 
-        // ✅ Soporte para mouse (PC)
         window.addEventListener('mousemove', (event) => {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -369,19 +400,29 @@
             handleInteraction(event.clientX, event.clientY);
         });
 
-        // ✅ Soporte para touch (celular)
+        // Touch para los emojis
         window.addEventListener('touchend', (event) => {
+            if (touchBlocked) return;
             event.preventDefault();
             const touch = event.changedTouches[0];
             handleInteraction(touch.clientX, touch.clientY);
         }, { passive: false });
 
-        document.getElementById('btn-close').addEventListener('click', () => cardModal.classList.remove('active'));
+        // Botón cerrar - mouse
+        document.getElementById('btn-close').addEventListener('click', (e) => {
+            e.stopPropagation();
+            cardModal.classList.remove('active');
+            touchBlocked = true;
+            setTimeout(() => { touchBlocked = false; }, 600);
+        });
 
-        // Soporte touch para cerrar la tarjeta también
+        // Botón cerrar - touch
         document.getElementById('btn-close').addEventListener('touchend', (e) => {
+            e.stopPropagation();
             e.preventDefault();
             cardModal.classList.remove('active');
+            touchBlocked = true;
+            setTimeout(() => { touchBlocked = false; }, 600);
         }, { passive: false });
 
         const clock = new THREE.Clock();
@@ -436,7 +477,6 @@
             }, 16);
         });
 
-        // Touch para el botón explorar también
         document.getElementById('btn-enter').addEventListener('touchend', (e) => {
             e.preventDefault();
             document.getElementById('btn-enter').click();
