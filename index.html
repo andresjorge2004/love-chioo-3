@@ -15,19 +15,9 @@
             --accent: #ffd1dc;
             --text-glow: 0 0 15px rgba(255, 179, 198, 0.6), 0 0 30px rgba(255, 128, 159, 0.4);
         }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            background-color: #030102; 
-            font-family: 'Montserrat', sans-serif; 
-            color: white; 
-            -webkit-font-smoothing: antialiased;
-        }
-
+        body { margin: 0; overflow: hidden; background-color: #030102; font-family: 'Montserrat', sans-serif; color: white; -webkit-font-smoothing: antialiased; }
         canvas { touch-action: none; }
-        
         #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
 
         #intro-screen {
@@ -37,27 +27,19 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 100; transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
         #intro-screen h1 {
-            font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: 3.5rem; letter-spacing: 6px; 
+            font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: 3.5rem; letter-spacing: 6px;
             margin-bottom: 2rem; text-align: center; text-shadow: var(--text-glow); color: var(--accent);
             opacity: 0; transform: translateY(20px); animation: fadeIn 3s ease forwards 0.5s;
         }
-
-        #error-msg {
-            font-size: 0.9rem; color: #ff6b6b; margin-bottom: 20px; font-weight: 300; text-align: center; max-width: 80%;
-            display: none;
-        }
-
+        #error-msg { font-size: 0.9rem; color: #ff6b6b; margin-bottom: 20px; font-weight: 300; text-align: center; max-width: 80%; display: none; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-
         #btn-enter {
             padding: 12px 45px; font-size: 1rem; font-weight: 300; background: transparent; color: var(--accent);
-            border: 1px solid rgba(255, 179, 198, 0.4); border-radius: 50px; cursor: pointer; transition: all 0.5s ease; 
+            border: 1px solid rgba(255, 179, 198, 0.4); border-radius: 50px; cursor: pointer; transition: all 0.5s ease;
             font-family: inherit; letter-spacing: 4px; box-shadow: 0 0 20px rgba(255, 179, 198, 0.1);
             opacity: 0; animation: fadeIn 3s ease forwards 1.5s;
         }
-
         #btn-enter:hover { background: rgba(255, 179, 198, 0.1); border-color: var(--primary); box-shadow: var(--text-glow); transform: scale(1.05); }
 
         #message-card {
@@ -69,28 +51,15 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 30px rgba(255, 179, 198, 0.1);
             z-index: 50; opacity: 0; pointer-events: none; transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        
         #message-card.active { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
-
         #card-icon { font-size: 3.5rem; margin-bottom: 15px; filter: drop-shadow(0 0 20px rgba(255,179,198,0.8)); }
-
-        #card-title {
-            font-family: 'Montserrat', sans-serif; font-size: 0.9rem; letter-spacing: 3px; 
-            color: var(--primary); margin-bottom: 15px; text-transform: uppercase;
-        }
-
-        #card-text { 
-            font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.8rem; line-height: 1.4; 
-            font-weight: 300; margin-bottom: 35px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            white-space: pre-line;
-        }
-
+        #card-title { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; letter-spacing: 3px; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; }
+        #card-text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.8rem; line-height: 1.4; font-weight: 300; margin-bottom: 35px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); white-space: pre-line; }
         #btn-close {
             background: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8);
             padding: 10px 30px; border-radius: 30px; cursor: pointer; font-family: 'Montserrat', sans-serif;
             font-size: 0.8rem; letter-spacing: 2px; transition: 0.4s; font-weight: 300;
         }
-
         #btn-close:hover { background: rgba(255,255,255,0.05); border-color: #fff; color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
         #crosshair {
@@ -99,6 +68,48 @@
             z-index: 40; pointer-events: none; transition: 0.3s ease;
         }
         #crosshair.active { background: rgba(255,255,255,1); box-shadow: 0 0 15px var(--primary); transform: translate(-50%, -50%) scale(2); }
+
+        /* Corazón central CSS */
+        #center-heart-wrap {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            width: 90px; height: 90px;
+            cursor: pointer;
+        }
+        /* Luz de fondo que pulsa */
+        #center-heart-wrap::before {
+            content: '';
+            position: absolute;
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,30,80,0.55) 0%, rgba(255,80,120,0.25) 45%, rgba(255,100,140,0) 75%);
+            animation: glowPulse 1.6s ease-in-out infinite;
+            z-index: 0;
+        }
+        #center-heart {
+            position: relative;
+            font-size: 1.9rem;
+            z-index: 1;
+            animation: heartSpin 5s linear infinite, heartPulse 1.6s ease-in-out infinite;
+            filter: drop-shadow(0 0 6px #ff3366) drop-shadow(0 0 14px #ff80a0);
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1);   opacity: 0.7; }
+            50%       { transform: scale(1.5); opacity: 1;   }
+        }
+        @keyframes heartSpin {
+            0%   { transform: rotate(0deg)   scale(1); }
+            50%  { transform: rotate(180deg) scale(1.12); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        @keyframes heartPulse {
+            0%, 100% { filter: drop-shadow(0 0 5px #ff3366) drop-shadow(0 0 12px #ff80a0); }
+            50%       { filter: drop-shadow(0 0 10px #ff0044) drop-shadow(0 0 22px #ff3366); }
+        }
+        #center-heart-wrap:active #center-heart { transform: scale(1.3); }
     </style>
 
     <script type="importmap">
@@ -120,8 +131,13 @@
 
     <div id="crosshair"></div>
 
+    <!-- Corazón central sobre el agujero negro -->
+    <div id="center-heart-wrap">
+        <div id="center-heart">❤️</div>
+    </div>
+
     <div id="message-card">
-        <div id="card-icon">✨</div>
+        <div id="card-icon">❤️</div>
         <div id="card-title">Lo que me gusta de ti</div>
         <p id="card-text">Mensaje</p>
         <button id="btn-close">CERRAR</button>
@@ -138,7 +154,6 @@
 
         document.getElementById('error-msg').style.display = 'none';
 
-        // Detectar si es móvil para ajustar calidad
         const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         const emojisPosibles = ['❤️','💕','💖','💗','💓','💞','✨','🌹','🌸','🫶','💫','♡','🦋','🌷','🌟','💌','💑','👩‍❤️‍👨','👨‍❤️‍👨','👩‍❤️‍👩','💏','💐','🪷','🪻','🌝','🌛','🌜','🫰','🫠','🥺','🤗','🕯️','🏹','🎁','🍯','🍬','🍭','🧁','🍰','🎇','🎆','🏖️','🌅','🌄','🚀','🗝️','❤️‍🔥','❤️‍🩹'];
@@ -230,7 +245,6 @@
 
         const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, powerPreference: "high-performance" });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        // En móvil usamos pixelRatio 1 para mayor nitidez y menos carga
         renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = isMobile ? 0.9 : 1.2;
@@ -242,7 +256,6 @@
         controls.maxDistance = 350; controls.minDistance = 25;
 
         const renderScene = new RenderPass(scene, camera);
-        // Bloom mucho más suave en móvil para no tapar los emojis
         const bloomStrength = isMobile ? 0.6 : 2.0;
         const bloomRadius = isMobile ? 0.3 : 0.8;
         const bloomThreshold = isMobile ? 0.4 : 0.1;
@@ -278,8 +291,8 @@
         accretionDisk.rotation.x = Math.PI / 2.1;
         scene.add(accretionDisk);
 
-        const starGeo = new THREE.BufferGeometry();
         const starCount = isMobile ? 8000 : 15000;
+        const starGeo = new THREE.BufferGeometry();
         const starPos = new Float32Array(starCount * 3);
         for(let i = 0; i < starCount; i++) {
             const r = 25 + Math.pow(Math.random(), 2) * 250;
@@ -298,12 +311,9 @@
 
         function createEmojiHologramSprite(emojiText, colorHex) {
             const canvas = document.createElement('canvas');
-            // Mayor resolución en móvil para nitidez
             const size = isMobile ? 256 : 512;
             canvas.width = size; canvas.height = size;
             const ctx = canvas.getContext('2d');
-
-            // Aura muy sutil en móvil para no tapar el emoji
             if (!isMobile) {
                 const gradient = ctx.createRadialGradient(size/2, size/2, 30, size/2, size/2, size*0.43);
                 gradient.addColorStop(0, colorHex + '44');
@@ -311,34 +321,18 @@
                 ctx.fillStyle = gradient;
                 ctx.fillRect(0, 0, size, size);
             }
-
-            // Emoji nítido y grande
             const fontSize = isMobile ? 140 : 160;
             ctx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            // Sin sombra en móvil para máxima nitidez
-            if (!isMobile) {
-                ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
-                ctx.shadowBlur = 8;
-            }
+            if (!isMobile) { ctx.shadowColor = 'rgba(255,255,255,0.4)'; ctx.shadowBlur = 8; }
             ctx.fillStyle = '#ffffff';
             ctx.fillText(emojiText, size/2, size/2 + (isMobile ? 8 : 15));
-
             const texture = new THREE.CanvasTexture(canvas);
             texture.colorSpace = THREE.SRGBColorSpace;
             texture.minFilter = THREE.LinearFilter;
             texture.magFilter = THREE.LinearFilter;
-
-            const material = new THREE.SpriteMaterial({
-                map: texture,
-                transparent: true,
-                blending: THREE.NormalBlending,
-                depthWrite: false,
-                // Sin sRGB extra en móvil
-                toneMapped: isMobile ? false : true
-            });
-
+            const material = new THREE.SpriteMaterial({ map: texture, transparent: true, blending: THREE.NormalBlending, depthWrite: false, toneMapped: !isMobile });
             const sprite = new THREE.Sprite(material);
             sprite.scale.set(16, 16, 1);
             return sprite;
@@ -356,14 +350,37 @@
         });
 
         const raycaster = new THREE.Raycaster();
-        // Raycaster más generoso en móvil (dedo más grande que cursor)
         raycaster.params.Sprite = { threshold: isMobile ? 8 : 3 };
         const mouse = new THREE.Vector2();
         const crosshair = document.getElementById('crosshair');
         const cardModal = document.getElementById('message-card');
 
-        // Bloqueo para evitar que se abran múltiples tarjetas al tocar
         let touchBlocked = false;
+
+        // Corazón central - abrir tarjeta especial
+        const centerHeartWrap = document.getElementById('center-heart-wrap');
+
+        function openHeartCard() {
+            if (touchBlocked) return;
+            document.getElementById('card-icon').innerText = '❤️';
+            document.getElementById('card-icon').style.textShadow = '0 0 30px #ff0044, 0 0 60px #ff3366';
+            document.getElementById('card-title').innerText = '✦ Para ti, mi amor ✦';
+            document.getElementById('card-text').innerText = 'Te amo con mi vida entera\nmi amor ❤️';
+            cardModal.classList.add('active');
+            touchBlocked = true;
+            setTimeout(() => { touchBlocked = false; }, 600);
+        }
+
+        centerHeartWrap.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openHeartCard();
+        });
+
+        centerHeartWrap.addEventListener('touchend', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            openHeartCard();
+        }, { passive: false });
 
         function handleInteraction(clientX, clientY) {
             if (cardModal.classList.contains('active')) return;
@@ -372,20 +389,16 @@
             mouse.y = -(clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(interactiveSprites);
-
             if (intersects.length > 0) {
                 const sprite = intersects[0].object;
                 const data = sprite.userData.data;
-
                 sprite.scale.set(24, 24, 1);
                 setTimeout(() => sprite.scale.set(16, 16, 1), 300);
-
                 document.getElementById('card-icon').innerText = data.emoji;
                 document.getElementById('card-icon').style.textShadow = `0 0 20px ${data.color}`;
                 document.getElementById('card-title').innerText = data.title;
                 document.getElementById('card-text').innerText = data.card;
                 cardModal.classList.add('active');
-
                 touchBlocked = true;
                 setTimeout(() => { touchBlocked = false; }, 600);
             }
@@ -400,7 +413,6 @@
             handleInteraction(event.clientX, event.clientY);
         });
 
-        // Touch para los emojis
         window.addEventListener('touchend', (event) => {
             if (touchBlocked) return;
             event.preventDefault();
@@ -408,7 +420,6 @@
             handleInteraction(touch.clientX, touch.clientY);
         }, { passive: false });
 
-        // Botón cerrar - mouse
         document.getElementById('btn-close').addEventListener('click', (e) => {
             e.stopPropagation();
             cardModal.classList.remove('active');
@@ -416,7 +427,6 @@
             setTimeout(() => { touchBlocked = false; }, 600);
         });
 
-        // Botón cerrar - touch
         document.getElementById('btn-close').addEventListener('touchend', (e) => {
             e.stopPropagation();
             e.preventDefault();
@@ -430,7 +440,6 @@
         function animate() {
             requestAnimationFrame(animate);
             const elapsedTime = clock.getElapsedTime();
-
             controls.update();
             diskShaderMaterial.uniforms.time.value = elapsedTime;
             stars.rotation.y = elapsedTime * 0.005;
@@ -448,11 +457,9 @@
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(interactiveSprites);
             if(intersects.length > 0) {
-                crosshair.classList.add('active');
-                document.body.style.cursor = 'pointer';
+                crosshair.classList.add('active'); document.body.style.cursor = 'pointer';
             } else {
-                crosshair.classList.remove('active');
-                document.body.style.cursor = 'default';
+                crosshair.classList.remove('active'); document.body.style.cursor = 'default';
             }
 
             composer.render();
